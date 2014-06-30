@@ -31,8 +31,12 @@ function [NewPoints,G,W]=NonRigidPointSet(X,Y,D,M,N,sig2,w,W,G,alpha)
         diagonal=diag(P*ones(N,1));
         diagonal1=diag(P'*ones(M,1));
         
-        A=(diagonal*G+alpha*sig2);%*((diagonal)^-1));
-        B=P*X-diagonal*Y;
+        idP = diag(1 ./ (P*ones(N, 1)));
+        A =  G + alpha * sig2 * idP;
+        B = idP* P*X - Y;
+        
+%         A=(diagonal*G+alpha*sig2);%*((diagonal)^-1));
+%         B=P*X-diagonal*Y;
         %B=((diagonal)^-1)*P*X-Y;
         W=A\B;
          

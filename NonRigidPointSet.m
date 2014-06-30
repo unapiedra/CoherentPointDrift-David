@@ -2,8 +2,11 @@ function [NewPoints,G,W]=NonRigidPointSet(X,Y,D,M,N,sig2,w,W,G,alpha)
     NewPoints=ones(N,D);
     
     iter=0;
-       
-    while (iter<1000) & (abs(sig2)>10*eps)
+
+    gifname = 'nonrigid.gif';
+
+    while (iter<1000) & (abs(sig2)>10*eps) 
+        
         iter=iter+1;
               
         %E-Step:
@@ -27,6 +30,16 @@ function [NewPoints,G,W]=NonRigidPointSet(X,Y,D,M,N,sig2,w,W,G,alpha)
         P = bsxfun(@rdivide, P, denom);
         P=P';
         
+        E = 0;
+        for n=1:N
+            tmp = 0;
+            for m=1:M
+                tmp = tmp + P(n,m)/ sum(P(:,m));
+            end
+            E = E - log(tmp/M);
+        end
+
+        
         %M-Step:
         diagonal=diag(P*ones(N,1));
         diagonal1=diag(P'*ones(M,1));
@@ -37,7 +50,7 @@ function [NewPoints,G,W]=NonRigidPointSet(X,Y,D,M,N,sig2,w,W,G,alpha)
         
 %         A=(diagonal*G+alpha*sig2);%*((diagonal)^-1));
 %         B=P*X-diagonal*Y;
-        %B=((diagonal)^-1)*P*X-Y;
+        rcond(A)
         W=A\B;
          
         
@@ -47,6 +60,24 @@ function [NewPoints,G,W]=NonRigidPointSet(X,Y,D,M,N,sig2,w,W,G,alpha)
         sig2=1/(N_P*D)*(trace(X'*diagonal1*X)-2*trace((P*X)'*T)+trace(T'*diagonal*T));
 
         NewPoints=T;
+        
+           if (1)
+%             Nrm=normalise(X);
+            plot(X(:,1),X(:,2),'or'); hold on;
+            plot(NewPoints(:,1),NewPoints(:,2),'*g'); hold off;
+            title( sprintf('k = %d', iter) );
+            axis off;
+    
+            % Copy the new image in the gif.
+            frame = getframe(1);
+            new_image = frame2im(frame);
+            [ind_image,colormap] = rgb2ind(new_image,256);
+            if iter == 1
+                imwrite(ind_image,colormap,gifname,'gif','LoopCount',Inf,'DelayTime',1);
+            else
+                imwrite(ind_image,colormap,gifname,'gif','WriteMode','append','DelayTime',1);
+            end
+        end
         
     end
 end

@@ -67,5 +67,5 @@ plot(ynew(:,1),ynew(:,2),'.g');
 
 %% Generate a nice gif
 load('cpd_data2D_fish');
-[ynew, R, s] = PointSetRegistration(X, Y, 1);
+[ynew, R, s] = PointSetRegistration(X, Y, 3);
 

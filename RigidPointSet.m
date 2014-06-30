@@ -55,10 +55,10 @@ function [NewPoints,R,s,t]=RigidPointSet(X,Y,D,M,N,R,s,t,sig2,w)
         end
         
         NewPoints=s.*Y*R'+ones(M,1)*t';
-        if (mod(iter,100)==1)
-            Nrm=normalise(X);
-            plot(Nrm(:,1),Nrm(:,2),'.r');
-            plot(NewPoints(:,1),NewPoints(:,2),'.g');
+        if (1)
+%             Nrm=normalise(X);
+            plot(X(:,1),X(:,2),'or'); hold on;
+            plot(NewPoints(:,1),NewPoints(:,2),'*g'); hold off;
             title( sprintf('k = %d', iter) );
     
             % Copy the new image in the gif.
